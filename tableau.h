@@ -181,8 +181,6 @@ int Tableau<T>::occurrence(const T & element) const {
 
 template <class T>
 void Tableau<T>::vider() {
-    delete[] elements;
-    elements = nullptr;
     nbElements = 0;
 }
 
