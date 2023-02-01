@@ -95,73 +95,134 @@ class Tableau {
 
 template <class T>
 Tableau<T>::Tableau(int capacite_initiale) {
-	// À compléter
+	capacite = capacite_initiale;
+	nbElements = 0;
+	elements = new T[capacite];
 }
 
 template <class T>
 Tableau<T>::Tableau(const Tableau & autre) {
-	// À compléter
+	capacite = autre.capacite;
+	nbElements = autre.nbElements;
+	elements = new T[capacite];
+	for (int i = 0; i < nbElements; i++) {
+		elements[i] = autre.elements[i];
+	}
 }
 
 template <class T>
 Tableau<T>::~Tableau() {
-	// À compléter
+	delete[] elements;
 }
 
 template <class T>
 void Tableau<T>::ajouter(const T & element) {
-	// À compléter
+	if (nbElements == capacite) {
+		capacite *= 2;
+		T * newElements = new T[capacite];
+		for (int i = 0; i < nbElements; i++) {
+			newElements[i] = elements[i];
+		}
+		delete[] elements;
+		elements = newElements;
+	}
+	elements[nbElements++] = element;
 }
 
 template <class T>
 int Tableau<T>::taille() const {
-	// À compléter
-	return 0;
+	return nbElements;
 }
 
 template <class T>
-void Tableau<T>::inserer(const T & element, int index) {
-	// À compléter
+void Tableau<T>::inserer(const T & element, int i) {
+	assert(i >= 0 && i <= nbElements);
+	if (nbElements == capacite) {
+		capacite *= 2;
+		T * newElements = new T[capacite];
+		for (int j = 0; j < i; j++) {
+			newElements[j] = elements[j];
+		}
+		newElements[i] = element;
+		for (int j = i; j < nbElements; j++) {
+			newElements[j + 1] = elements[j];
+		}
+		delete[] elements;
+		elements = newElements;
+		nbElements++;
+	} else {
+		for (int j = nbElements; j > i; j--) {
+			elements[j] = elements[j - 1];
+		}
+		elements[i] = element;
+		nbElements++;
+	}
 }
 
 template <class T>
-void Tableau<T>::enlever(int index) {
-	// À compléter
+void Tableau<T>::enlever(int i) {
+	assert(i >= 0 && i < nbElements);
+	for (int j = i; j < nbElements - 1; j++) {
+		elements[j] = elements[j + 1];
+	}
+	nbElements--;
 }
 
 template <class T>
 int Tableau<T>::occurrence(const T & element) const {
-	// À compléter
-	return 0; 
+	int count = 0;
+	for (int i = 0; i < nbElements; i++) {
+		if (elements[i] == element) {
+			count++;
+		}
+	}
+	return count;
 }
 
 template <class T>
 void Tableau<T>::vider() {
-	// À compléter
+    delete[] elements;
+    elements = nullptr;
+    nbElements = 0;
 }
 
 template <class T>
 const T & Tableau<T>::operator [] (int index) const {
-	// À compléter
-	return nullptr;
+    assert(index >= 0 && index < nbElements);
+    // assert(index >= 0 && index < nbElements && "Index out of range");
+	return elements[index];
 }
 
 template <class T>
 T & Tableau<T>::operator [] (int index) {
-	// À compléter
-	return nullptr;
+    assert(index >= 0 && index < nbElements);
+	return elements[index];
 }
 
 template <class T>
 bool Tableau<T>::operator == (const Tableau<T> & autre) const {
-	// À compléter
-	return false;
+    if (nbElements != autre.nbElements) {
+        return false;
+    }
+    for (int i = 0; i < nbElements; i++) {
+        if (elements[i] != autre.elements[i]) {
+            return false;
+        }
+    }
+    return true;
 }
 
 template <class T>
 Tableau<T> & Tableau<T>::operator = (const Tableau<T> & autre) {
-	// À compléter
-	return nullptr;
+    if (this != &autre) {
+        delete[] elements;
+        nbElements = autre.nbElements;
+        elements = new T[nbElements];
+        for (int i = 0; i < nbElements; i++) {
+            elements[i] = autre.elements[i];
+        }
+    }
+    return *this;
 }
 
 /***** Fonctions privées *****/
