@@ -22,7 +22,10 @@ int main() {
 	hdd.inserer(-1);
 	hdd.inserer(-5);
 	hdd.inserer(-2);
+	// std::cout << "Le set : " << ssd << std::endl;
+	// std::cout << "Le set : " << hdd << std::endl;
 	flash = ssd.fusion(hdd);
+	// std::cout << "Le set : " << flash << std::endl;
 	if(flash.taille() != 11) {
 		std::cerr << "ECHEC - I" << std::endl;
 		erreur++;
@@ -37,6 +40,7 @@ int main() {
 		erreur++;
 	}
 	flash = hdd.fusion(ssd);
+	// std::cout << "Le set : " << flash << std::endl;
 	if(flash.taille() != 11) {
 		std::cerr << "ECHEC - III" << std::endl;
 		erreur++;

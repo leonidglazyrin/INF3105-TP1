@@ -115,124 +115,137 @@ class Ensemble {
 
 template <class T>
 Ensemble<T>::Ensemble() {
-	ens = new Tableau<T>();
 }
 
 template <class T>
-Ensemble<T>::Ensemble(const Ensemble<T> & autre) {
-	ens = new Tableau<T>(*autre.ens);
+Ensemble<T>::Ensemble(const Ensemble & autre) {
+	for (int i = 0; i < autre.taille(); i++) {
+		this->ens.ajouter(autre.ens[i]);
+	}
 }
 
 template <class T>
 Ensemble<T>::~Ensemble() {
-	delete ens;
 }
 
 template <class T>
 bool Ensemble<T>::contient(const T & e) const {
-	for(int i = 0; i < ens->taille(); i++) {
-		if((*ens)[i] == e) return true;
+	int left = 0, right = ens.taille() - 1;
+
+	while (left <= right) {
+		int mid = left + (right - left) / 2;
+		
+		if (ens[mid] == e) {
+			return true;
+		} else if (ens[mid] < e) {
+			left = mid + 1;   
+		} else {
+			right = mid - 1;
+		}
 	}
 	return false;
 }
 
 template <class T>
 int Ensemble<T>::taille() const {
-	return ens->taille();
+  return ens.taille();
 }
 
 template <class T>
-bool Ensemble<T>::inserer(const T & e)
-{
-    if (!this->contient(e))
-    {
-        this->tab->ajouter(e);
-        return true;
-    }
-    return false;
+bool Ensemble<T>::inserer(const T & e) {
+	if (this->contient(e)) {
+		return false;
+	}
+
+	int low = 0, high = ens.taille() - 1;
+
+	while (low <= high) {
+		int mid = low + (high-low)/2;
+
+		if (ens[mid] < e)
+			low = mid+1;
+		else
+			high = mid-1;
+	}
+
+	ens.inserer(e, low);
+
+  	return true;
 }
 
-// template <class T>
-// bool Ensemble<T>::enlever(const T & e)
-// {
-//     int index = -1;
-//     for (int i = 0; i < this->taille(); i++)
-//     {
-//         if (this->tab->operator[](i) == e)
-//         {
-//             index = i;
-//             break;
-//         }
-//     }
-//     if (index != -1)
-//     {
-//         this->tab->enlever(index);
-//         return true;
-//     }
-//     return false;
-// }
 template <class T>
 bool Ensemble<T>::enlever(const T & e) {
-	for(int i = 0; i < ens->taille(); i++) {
-		if((*ens)[i] == e) {
-			ens->enlever(i);
-			return true;
+	if (!this->contient(e)) {
+		return false;
+	}
+
+	int left = 0, right = ens.taille() - 1;
+	int mid;
+
+	while (left <= right) {
+		mid = left + (right - left) / 2;
+		
+		if (ens[mid] == e) {
+			break;
+		} else if (ens[mid] < e) {
+			left = mid + 1;   
+		} else {
+			right = mid - 1;
 		}
 	}
-	return false;
-}
+	ens.enlever(mid);
 
-template <class T>
-bool Ensemble<T>::operator == (const Ensemble<T> & autre) const {
-	if(taille() != autre.taille()) return false;
-	for(int i = 0; i < taille(); i++) {
-		if(!autre.contient((*ens)[i])) return false;
-	}
 	return true;
 }
 
 template <class T>
+bool Ensemble<T>::operator == (const Ensemble<T> & autre) const {
+  if (ens.taille() != autre.taille()) {
+    return false;
+  }
+  Ensemble<T> inter = this.inter(autre);
+  return ens.taille() == inter.taille();
+}
+
+template <typename T>
 Ensemble<T> & Ensemble<T>::operator = (const Ensemble<T> & autre) {
-	delete ens;
-	ens = new Tableau<T>(*autre.ens);
-	return *this;
+  if (this != &autre) {
+    ens.vider();
+    for (int i = 0; i < autre.taille(); i++) {
+      ens.ajouter(autre.ens[i]);
+    }
+  }
+  return *this;
 }
 
 template <class T>
 Ensemble<T> Ensemble<T>::fusion(const Ensemble<T> & autre) const {
-	Ensemble<T> res = *this;
-	for(int i = 0; i < autre.taille(); i++) {
-		res.inserer((*autre.ens)[i]);
-	}
-	return res;
-}
-
-template <class T>
-Ensemble<T> Ensemble<T>::inter(const Ensemble<T> & autre) const {
-	Ensemble<T> res;
-	for(int i = 0; i < ens.taille(); i++) {
-		if(autre.contient((*ens)[i])) res.inserer((*ens)[i]);
-	}
-	return res;
-}
-
-template <class T>
-Ensemble<T> Ensemble<T>::minus(const Ensemble<T> & autre) const {
-	Ensemble<T> result;
-	for(int i = 0; i < ens.taille(); i++) {
-		if (!autre.contient((*ens)[i])) {
-			result.ajouter((*ens)[i]);
-		}
+	Ensemble<T> result(autre);
+	
+	for (int i = 0; i < ens.taille(); i++) {
+		result.inserer(ens[i]);
 	}
 	return result;
 }
 
+template <class T>
+Ensemble<T> Ensemble<T>::inter(const Ensemble<T> & autre) const {
+	// À compléter
+	return autre;
+}
+
+template <class T>
+Ensemble<T> Ensemble<T>::minus(const Ensemble<T> & autre) const {
+	// À compléter
+	return autre;
+}
+
 template <typename U>
 std::ostream& operator << (std::ostream& os, const Ensemble<U> & e) {
-    os << "{";
-    for (unsigned int i = 0; i < this->ens.taille(); ++i) {
-        os << ens[i];
-        if (i < ens.taille() - 1) os << ", ";
+	os << "{";
+    for (unsigned int i = 0; i < e.taille(); i++) {
+        os << e.ens[i];
+        if (i < e.taille() - 1) os << ", ";
     }
     os << "}";
     return os;
