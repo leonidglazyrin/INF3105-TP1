@@ -25,6 +25,10 @@ using namespace std;
  * toutes les communautés présentes dans le réseau lu.
  */
 Tableau<int> communautes() {
+	// On commence par charger toute les paire dans un tableau.
+	// Parcourir les paires et sil lun des membres est dans notre Ensemble on ajoute la nouvel pair et on supprime cette pair du tableau"source".
+	//Le nombre de fois quon arrive a le faire avant que "source" soit vide est le nombre de communauees.
+
 	// À compléter
 	return nullptr;
 }
