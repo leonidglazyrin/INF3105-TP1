@@ -75,18 +75,21 @@ int main() {
 	compteurComparaisons = 0;
 	flash = hdd.fusion(ssd);
 	if(compteurComparaisons > 194 * n) {
+		std::cout << "Compte : " << compteurComparaisons << " vs : " << 194 * n << std::endl;
 		std::cerr << "ECHEC - III" << std::endl;
 		erreur++;
 	}
 	compteurComparaisons = 0;
 	flash = hdd.inter(ssd);
 	if(compteurComparaisons > 194 * n) {
+		std::cout << "Compte : " << compteurComparaisons << " vs : " << 194 * n << std::endl;
 		std::cerr << "ECHEC - IV" << std::endl;
 		erreur++;
 	}
 	compteurComparaisons = 0;
 	flash = hdd.minus(ssd);
 	if(compteurComparaisons > 194 * n) {
+		std::cout << "Compte : " << compteurComparaisons << " vs : " << 194 * n << std::endl;
 		std::cerr << "ECHEC - V" << std::endl;
 		erreur++;
 	}

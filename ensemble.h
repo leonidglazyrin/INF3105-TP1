@@ -221,23 +221,70 @@ Ensemble<T> & Ensemble<T>::operator = (const Ensemble<T> & autre) {
 template <class T>
 Ensemble<T> Ensemble<T>::fusion(const Ensemble<T> & autre) const {
 	Ensemble<T> result(autre);
+	int i = 0, j = 0;
+
+    while (i < ens.taille() && j < autre.ens.taille()) {
+        if (ens[i] < autre.ens[j]) {
+            result.ens.ajouter(ens[i++]);
+		} else if (autre.ens[j] < ens[j]) {
+            result.ens.ajouter(autre.ens[j++]);
+		} else {
+            result.ens.ajouter(ens[i++]);
+			j++;
+		}
+    }
+
+    while (i < ens.taille())
+        result.ens.ajouter(ens[i++]);
 	
-	for (int i = 0; i < ens.taille(); i++) {
-		result.inserer(ens[i]);
-	}
-	return result;
+	while (j < autre.ens.taille())
+        result.ens.ajouter(autre.ens[j++]);
+
+    return result;
 }
 
 template <class T>
 Ensemble<T> Ensemble<T>::inter(const Ensemble<T> & autre) const {
-	// À compléter
-	return autre;
+	Ensemble<T> result;
+
+	int i = 0, j = 0;
+	int m = ens.taille(), n = autre.ens.taille();
+    while (i < m && j < n) {
+        if (ens[i] < autre.ens[j])
+            i++;
+        else if (autre.ens[j] < ens[i])
+            j++;
+        else {
+            result.ens.ajouter(ens[i]);
+            i++;
+            j++;
+        }
+    }
+	return result;
 }
 
 template <class T>
 Ensemble<T> Ensemble<T>::minus(const Ensemble<T> & autre) const {
-	// À compléter
-	return autre;
+	Ensemble<T> result;
+
+    int i = 0, j = 0;
+
+    while (i < ens.taille() && j < autre.ens.taille()) {
+        if (ens[i] < autre.ens[j]) {
+            result.ens.ajouter(ens[i]);
+            i++;
+        } else if (ens[i] > autre.ens[j]) {
+            j++;
+        } else {
+            i++;
+            j++;
+        }
+    }
+
+    while (i < ens.taille())
+        result.inserer(ens[i++]);
+
+    return result;
 }
 
 template <typename U>

@@ -23,6 +23,7 @@ int main() {
 	hdd.inserer(-5);
 	hdd.inserer(-2);
 	flash = ssd.inter(hdd);
+	// std::cout << "Le set : " << flash << std::endl;
 	if(flash.taille() != 0) {
 		std::cerr << "ECHEC - I" << std::endl;
 		erreur++;
