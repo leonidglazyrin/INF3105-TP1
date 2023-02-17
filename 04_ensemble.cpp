@@ -75,6 +75,7 @@ int main() {
 	}
 	usc = usa.fusion(usb);
 	if(usc.taille() != 3 * n) {
+		std::cerr << usc.taille() << " vs " << 3*n << std::endl;
 		std::cerr << "ECHEC - VII" << std::endl;
 		erreur++;
 	}

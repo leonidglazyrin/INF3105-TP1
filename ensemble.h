@@ -220,27 +220,33 @@ Ensemble<T> & Ensemble<T>::operator = (const Ensemble<T> & autre) {
 
 template <class T>
 Ensemble<T> Ensemble<T>::fusion(const Ensemble<T> & autre) const {
-	Ensemble<T> result(autre);
-	int i = 0, j = 0;
+	// Ensemble<T> result;
+	// int i = 0, j = 0;
 
-    while (i < ens.taille() && j < autre.ens.taille()) {
-        if (ens[i] < autre.ens[j]) {
-            result.ens.ajouter(ens[i++]);
-		} else if (autre.ens[j] < ens[j]) {
-            result.ens.ajouter(autre.ens[j++]);
-		} else {
-            result.ens.ajouter(ens[i++]);
-			j++;
-		}
-    }
+    // while (i < ens.taille() && j < autre.ens.taille()) {
+    //     if (ens[i] < autre.ens[j]) {
+    //         result.ens.ajouter(ens[i++]);
+	// 	} else if (autre.ens[j] < ens[j]) {
+    //         result.ens.ajouter(autre.ens[j++]);
+	// 	} else {
+    //         result.ens.ajouter(ens[i++]);
+	// 		j++;
+	// 	}
+    // }
 
-    while (i < ens.taille())
-        result.ens.ajouter(ens[i++]);
+    // while (i < ens.taille())
+    //     result.ens.ajouter(ens[i++]);
 	
-	while (j < autre.ens.taille())
-        result.ens.ajouter(autre.ens[j++]);
+	// while (j < autre.ens.taille())
+    //     result.ens.ajouter(autre.ens[j++]);
 
-    return result;
+    // return result;
+	Ensemble<T> result(autre);
+	
+	for (int i = 0; i < ens.taille(); i++) {
+		result.inserer(ens[i]);
+	}
+	return result;
 }
 
 template <class T>

@@ -21,7 +21,7 @@ build: $(SRC_TAB) bonus_tableau.cpp $(SRC_ENS) tp1.cpp
 	# $(CXX) $(C11) 05_ensemble.cpp -o 05_ensemble 
 	# $(CXX) $(C11) 06_ensemble.cpp -o 06_ensemble 
 	# $(CXX) $(C11) 07_ensemble.cpp -o 07_ensemble 
-	# $(CXX) $(C11) tp1.cpp -o tp1
+	$(CXX) $(C11) tp1.cpp -o tp1
 
 tableau: $(EXEC_TAB)
 	./01_tableau
