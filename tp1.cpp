@@ -25,69 +25,88 @@ using namespace std;
  * toutes les communautés présentes dans le réseau lu.
  */
 Tableau<int> communautes() {
-	Tableau<Tableau<int>> source;
-	int x, y, n;
-	cin >> n;
+	int premier_membre, deuxieme_membre, nombre_membres;
 
-	while (cin >> x >> y) {
+	// Stocker la premiere ligne contenant le nombre de membres
+	cin >> nombre_membres;
+	Tableau<int> membres;
+	// Tableau de longueur du nombre de membre au fur et a mesure 1 sera mis pour les membre dans une communaute
+	for (int i = 0; i < nombre_membres; ++i) {
+		membres.ajouter(0);
+	}
+
+	// Tableau de paire correspondants aux lignes dans le fichier en entree
+	Tableau<Tableau<int>> source;
+	while (cin >> premier_membre >> deuxieme_membre) {
 		Tableau<int> tmp;
-        tmp.ajouter(x);
-        tmp.ajouter(y);
+        tmp.ajouter(premier_membre);
+        tmp.ajouter(deuxieme_membre);
 		source.ajouter(tmp);
     }
 
-	Tableau<Ensemble<int>> result;
+	// Ce tableau aura des ensembles qui pourraient avoir une intersection
+	Tableau<Ensemble<int>> tmp_result;
 
 	for (int i = 0; i < source.taille(); ++i){
 		int j;
-		for (j = 0; j < result.taille(); ++j) {
-			if (result[j].contient(source[i][0])){
-				result[j].inserer(source[i][1]);
+		for (j = 0; j < tmp_result.taille(); ++j) {
+			// Si l'un des deux est dans un ensemble, on insere l'autre dedans
+			if (tmp_result[j].contient(source[i][0])){
+				membres[source[i][1]] = 1;
+				tmp_result[j].inserer(source[i][1]);
 				break;
-			} else if (result[j].contient(source[i][1])){
-				result[j].inserer(source[i][0]);
+			} else if (tmp_result[j].contient(source[i][1])){
+				membres[source[i][0]] = 1;
+				tmp_result[j].inserer(source[i][0]);
 				break;
 			}
 		}
-		if (j == result.taille()){
+		// Si la nouvelle paire n'a pu etre mise dans aucun autre ensemble, on cree un nouveau ensemble(communaute)
+		if (j == tmp_result.taille()){
 			Ensemble<int> tmp;
 			tmp.inserer(source[i][0]);
 			tmp.inserer(source[i][1]);
-			result.ajouter(tmp);
+			tmp_result.ajouter(tmp);
+			membres[source[i][0]] = 1;
+			membres[source[i][1]] = 1;
 		}
 	}
 
+	// Tableau des communautees
 	Tableau<Ensemble<int>> result_final;
 
-	for (int i = 0; i < result.taille(); ++i) {
-		for (int j = 1; j < result.taille(); ++j) {
-			if (result[i].inter(result[j]).taille() != 0){
-				Ensemble<int> tmp = result[i].fusion(result[j]);
-				result.enlever(j);
-				result.enlever(i);
-				result_final.inserer(tmp);
+	// Verifier les intersections entre ensembles
+	for (int i = 0; i < tmp_result.taille(); ++i) {
+		for (int j = 1; j < tmp_result.taille(); ++j) {
+			if (tmp_result[i].inter(tmp_result[j]).taille() != 0){
+				Ensemble<int> tmp = tmp_result[i].fusion(tmp_result[j]);
+				tmp_result.enlever(j);
+				tmp_result.enlever(i);
+				result_final.ajouter(tmp);
 			}
 		}
 	}
 
-	for (int i = 0; i < result.taille(); ++i) {
-		result_final.inserer(result[i]);
+	// Rajouter les ensembles qui n'avaient pas d'intersections avec un autre ensemble
+	for (int i = 0; i < tmp_result.taille(); ++i) {
+		result_final.inserer(tmp_result[i]);
 	}
 
+	// Rajouter les membre qui n'etaient dans aucune communaute
+	for (int i = 0; i < nombre_membres; ++i) {
+		if(membres[i] == 0) {
+			Ensemble<int> tmp;
+			tmp.inserer(i);
+			result_final.ajouter(tmp);
+		}
+	}
+
+	Tableau<int> comptes;
 	for (int i = 0; i < result_final.taille(); ++i) {
-		cout << result_final[i] << endl;
+		comptes.ajouter(result_final[i].taille());
 	}
 
-	Tableau<int> results;
-	for (int i = 0; i < result_final.taille(); ++i) {
-		results.inserer(result_final[i].taille());
-	}
-
-	for (int i = 0; i < results.taille(); ++i) {
-		cout << results[i] << endl;
-	}
-
-	return results;
+	return comptes;
 }
 
 /**
