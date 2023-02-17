@@ -97,9 +97,9 @@ class Ensemble {
 	*
 	*****************************************************/
 	private:
-    		Tableau<T> ens;
-    		
-    	
+			Tableau<T> ens;
+			
+		
 	/**************** Interface privée ******************
 	* 
 	* Vous pouvez ajouter toutes les fonctions privées
@@ -119,9 +119,8 @@ Ensemble<T>::Ensemble() {
 
 template <class T>
 Ensemble<T>::Ensemble(const Ensemble & autre) {
-	for (int i = 0; i < autre.taille(); i++) {
-		this->ens.ajouter(autre.ens[i]);
-	}
+	for (int i = 0; i < autre.taille(); i++)
+		ens.ajouter(autre.ens[i]);
 }
 
 template <class T>
@@ -135,14 +134,14 @@ bool Ensemble<T>::contient(const T & e) const {
 	while (left <= right) {
 		int mid = left + (right - left) / 2;
 		
-		if (ens[mid] == e) {
+		if (ens[mid] == e)
 			return true;
-		} else if (ens[mid] < e) {
+		else if (ens[mid] < e)
 			left = mid + 1;   
-		} else {
+		else
 			right = mid - 1;
-		}
 	}
+	
 	return false;
 }
 
@@ -153,14 +152,13 @@ int Ensemble<T>::taille() const {
 
 template <class T>
 bool Ensemble<T>::inserer(const T & e) {
-	if (this->contient(e)) {
+	if (contient(e))
 		return false;
-	}
 
 	int low = 0, high = ens.taille() - 1;
 
 	while (low <= high) {
-		int mid = low + (high-low)/2;
+		int mid = low + (high - low) / 2;
 
 		if (ens[mid] < e)
 			low = mid+1;
@@ -175,23 +173,20 @@ bool Ensemble<T>::inserer(const T & e) {
 
 template <class T>
 bool Ensemble<T>::enlever(const T & e) {
-	if (!this->contient(e)) {
+	if (!contient(e))
 		return false;
-	}
 
 	int left = 0, right = ens.taille() - 1;
-	int mid;
 
 	while (left <= right) {
-		mid = left + (right - left) / 2;
+		int mid = left + (right - left) / 2;
 		
-		if (ens[mid] == e) {
+		if (ens[mid] == e)
 			break;
-		} else if (ens[mid] < e) {
+		else if (ens[mid] < e)
 			left = mid + 1;   
-		} else {
+		else
 			right = mid - 1;
-		}
 	}
 	ens.enlever(mid);
 
@@ -201,7 +196,7 @@ bool Ensemble<T>::enlever(const T & e) {
 template <class T>
 bool Ensemble<T>::operator == (const Ensemble<T> & autre) const {
   if (ens.taille() != autre.taille()) {
-    return false;
+	return false;
   }
   Ensemble<T> inter = this.inter(autre);
   return ens.taille() == inter.taille();
@@ -210,10 +205,10 @@ bool Ensemble<T>::operator == (const Ensemble<T> & autre) const {
 template <typename T>
 Ensemble<T> & Ensemble<T>::operator = (const Ensemble<T> & autre) {
   if (this != &autre) {
-    ens.vider();
-    for (int i = 0; i < autre.taille(); i++) {
-      ens.ajouter(autre.ens[i]);
-    }
+	ens.vider();
+	for (int i = 0; i < autre.taille(); i++) {
+	  ens.ajouter(autre.ens[i]);
+	}
   }
   return *this;
 }
@@ -223,22 +218,22 @@ Ensemble<T> Ensemble<T>::fusion(const Ensemble<T> & autre) const {
 	Ensemble<T> result;
 	int i = 0, j = 0;
 
-    while (i < ens.taille() && j < autre.ens.taille()) {
-        if (ens[i] < autre.ens[j]) {
-            result.ens.ajouter(ens[i++]);
+	while (i < ens.taille() && j < autre.ens.taille()) {
+		if (ens[i] < autre.ens[j]) {
+			result.ens.ajouter(ens[i++]);
 		} else if (autre.ens[j] < ens[i]) {
-            result.ens.ajouter(autre.ens[j++]);
+			result.ens.ajouter(autre.ens[j++]);
 		} else {
-            result.ens.ajouter(ens[i++]);
+			result.ens.ajouter(ens[i++]);
 			j++;
 		}
-    }
+	}
 
-    while (i < ens.taille())
-        result.ens.ajouter(ens[i++]);
+	while (i < ens.taille())
+		result.ens.ajouter(ens[i++]);
 	
 	while (j < autre.ens.taille())
-        result.ens.ajouter(autre.ens[j++]);
+		result.ens.ajouter(autre.ens[j++]);
 
 	return result;
 }
@@ -249,17 +244,17 @@ Ensemble<T> Ensemble<T>::inter(const Ensemble<T> & autre) const {
 
 	int i = 0, j = 0;
 	int m = ens.taille(), n = autre.ens.taille();
-    while (i < m && j < n) {
-        if (ens[i] < autre.ens[j])
-            i++;
-        else if (autre.ens[j] < ens[i])
-            j++;
-        else {
-            result.ens.ajouter(ens[i]);
-            i++;
-            j++;
-        }
-    }
+	while (i < m && j < n) {
+		if (ens[i] < autre.ens[j])
+			i++;
+		else if (autre.ens[j] < ens[i])
+			j++;
+		else {
+			result.ens.ajouter(ens[i]);
+			i++;
+			j++;
+		}
+	}
 	return result;
 }
 
@@ -267,35 +262,35 @@ template <class T>
 Ensemble<T> Ensemble<T>::minus(const Ensemble<T> & autre) const {
 	Ensemble<T> result;
 
-    int i = 0, j = 0;
+	int i = 0, j = 0;
 
-    while (i < ens.taille() && j < autre.ens.taille()) {
-        if (ens[i] < autre.ens[j]) {
-            result.ens.ajouter(ens[i]);
-            i++;
-        } else if (ens[i] > autre.ens[j]) {
-            j++;
-        } else {
-            i++;
-            j++;
-        }
-    }
+	while (i < ens.taille() && j < autre.ens.taille()) {
+		if (ens[i] < autre.ens[j]) {
+			result.ens.ajouter(ens[i]);
+			i++;
+		} else if (ens[i] > autre.ens[j]) {
+			j++;
+		} else {
+			i++;
+			j++;
+		}
+	}
 
-    while (i < ens.taille())
-        result.inserer(ens[i++]);
+	while (i < ens.taille())
+		result.inserer(ens[i++]);
 
-    return result;
+	return result;
 }
 
 template <typename U>
 std::ostream& operator << (std::ostream& os, const Ensemble<U> & e) {
 	os << "{";
-    for (unsigned int i = 0; i < e.taille(); i++) {
-        os << e.ens[i];
-        if (i < e.taille() - 1) os << ", ";
-    }
-    os << "}";
-    return os;
+	for (unsigned int i = 0; i < e.taille(); i++) {
+		os << e.ens[i];
+		if (i < e.taille() - 1) os << ", ";
+	}
+	os << "}";
+	return os;
 }
 
 /***** Fonctions privées *****/
