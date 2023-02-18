@@ -134,11 +134,11 @@ bool Ensemble<T>::contient(const T & e) const {
 	while (left <= right) {
 		int mid = left + (right - left) / 2;
 		
-		if (ens[mid] == e)
+		if (ens[mid] == e) 		// On trouve l'élement
 			return true;
-		else if (ens[mid] < e)
+		else if (ens[mid] < e) 	// On élimine la moitié gauche
 			left = mid + 1;   
-		else
+		else 					// On élimine la moitié droite
 			right = mid - 1;
 	}
 	
@@ -197,9 +197,7 @@ bool Ensemble<T>::enlever(const T & e) {
 
 template <class T>
 bool Ensemble<T>::operator == (const Ensemble<T> & autre) const {
-	if (ens.taille() != autre.taille())
-		return false;
-	return ens.taille() == inter(autre).taille();
+	return ens == autre.ens;
 }
 
 template <typename T>
