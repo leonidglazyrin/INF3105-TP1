@@ -176,10 +176,12 @@ bool Ensemble<T>::enlever(const T & e) {
 	if (!contient(e))
 		return false;
 
-	int left = 0, right = ens.taille() - 1;
+	int left = 0;
+	int right = ens.taille() - 1;
+	int mid;
 
 	while (left <= right) {
-		int mid = left + (right - left) / 2;
+		mid = left + (right - left) / 2;
 		
 		if (ens[mid] == e)
 			break;
@@ -195,22 +197,19 @@ bool Ensemble<T>::enlever(const T & e) {
 
 template <class T>
 bool Ensemble<T>::operator == (const Ensemble<T> & autre) const {
-  if (ens.taille() != autre.taille()) {
-	return false;
-  }
-  Ensemble<T> inter = this.inter(autre);
-  return ens.taille() == inter.taille();
+	if (ens.taille() != autre.taille())
+		return false;
+	return ens.taille() == inter(autre).taille();
 }
 
 template <typename T>
 Ensemble<T> & Ensemble<T>::operator = (const Ensemble<T> & autre) {
-  if (this != &autre) {
-	ens.vider();
-	for (int i = 0; i < autre.taille(); i++) {
-	  ens.ajouter(autre.ens[i]);
+	if (this != &autre) {
+		ens.vider();
+		for (int i = 0; i < autre.taille(); i++)
+			ens.ajouter(autre.ens[i]);
 	}
-  }
-  return *this;
+	return *this;
 }
 
 template <class T>
@@ -229,9 +228,9 @@ Ensemble<T> Ensemble<T>::fusion(const Ensemble<T> & autre) const {
 		}
 	}
 
+	// Rajouter les element restant des deux ensembles
 	while (i < ens.taille())
 		result.ens.ajouter(ens[i++]);
-	
 	while (j < autre.ens.taille())
 		result.ens.ajouter(autre.ens[j++]);
 
@@ -243,18 +242,18 @@ Ensemble<T> Ensemble<T>::inter(const Ensemble<T> & autre) const {
 	Ensemble<T> result;
 
 	int i = 0, j = 0;
-	int m = ens.taille(), n = autre.ens.taille();
-	while (i < m && j < n) {
-		if (ens[i] < autre.ens[j])
+	while (i < ens.taille() && j < autre.ens.taille()) {
+		if (ens[i] < autre.ens[j]) {
 			i++;
-		else if (autre.ens[j] < ens[i])
+		} else if (autre.ens[j] < ens[i]) {
 			j++;
-		else {
+		} else {
 			result.ens.ajouter(ens[i]);
 			i++;
 			j++;
 		}
 	}
+
 	return result;
 }
 
@@ -266,8 +265,7 @@ Ensemble<T> Ensemble<T>::minus(const Ensemble<T> & autre) const {
 
 	while (i < ens.taille() && j < autre.ens.taille()) {
 		if (ens[i] < autre.ens[j]) {
-			result.ens.ajouter(ens[i]);
-			i++;
+			result.ens.ajouter(ens[i++]);
 		} else if (ens[i] > autre.ens[j]) {
 			j++;
 		} else {
@@ -287,7 +285,8 @@ std::ostream& operator << (std::ostream& os, const Ensemble<U> & e) {
 	os << "{";
 	for (unsigned int i = 0; i < e.taille(); i++) {
 		os << e.ens[i];
-		if (i < e.taille() - 1) os << ", ";
+		if (i < e.taille() - 1)
+			os << ", ";
 	}
 	os << "}";
 	return os;
