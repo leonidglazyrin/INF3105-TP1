@@ -93,8 +93,6 @@ class Tableau {
 		/**
 		* Double la capacité d'un tableau dynamique appelé "Tableau" 
 		* de type T, et copie les éléments existants dans le nouveau tableau alloué.
-		* 
-		* @return void
 		*/
 		void redimensionner();
 };

@@ -18,6 +18,79 @@ using namespace std;
  * pratiques.
  ***********************************************************************/
 
+
+/**
+ * Lit des paires de membres à partir de l'entrée standard et les ajoute à un tableau de tableaux d'entiers.
+ *
+ * @param source Le tableau de tableaux d'entiers à remplir avec les paires de membres lues.
+ */
+void input_pairs(Tableau<Tableau<int>> & source) {
+	int premier_membre, deuxieme_membre;
+
+	while (cin >> premier_membre >> deuxieme_membre) {
+		Tableau<int> tmp;
+        tmp.ajouter(premier_membre);
+        tmp.ajouter(deuxieme_membre);
+		source.ajouter(tmp);
+    }
+}
+
+/**
+ * Compte le nombre de membres dans chaque ensemble d'un tableau 
+ * d'ensembles et renvoie un tableau des comptes.
+ *
+ * @param result_final Le tableau d'ensembles à analyser.
+ * @return Un tableau d'entiers représentant le nombre de membres dans chaque ensemble.
+ */
+Tableau<int> count_members(const Tableau<Ensemble<int>> & result_final)  {
+	Tableau<int> comptes;
+	for (int i = 0; i < result_final.taille(); ++i)
+		comptes.ajouter(result_final[i].taille());
+	return comptes;
+}
+
+/**
+ * Ajoute les membres solitaires à un tableau d'ensembles.
+ *
+ * @param nombre_membres Le nombre total de membres dans le tableau.
+ * @param membres Le tableau de membres, où chaque membre est représenté par un entier.
+ * @param result_final Le tableau d'ensembles à modifier, 
+ *						où les ensembles représentent des groupes de membres.
+ */
+void add_loners(const int nombre_membres, const Tableau<int> & membres, Tableau<Ensemble<int>> & result_final) {
+	for (int i = 0; i < nombre_membres; ++i) {
+		if(membres[i] == 0) {
+			Ensemble<int> tmp;
+			tmp.inserer(i);
+			result_final.ajouter(tmp);
+		}
+	}
+}
+
+/**
+ * Calcule les intersections entre les ensembles d'un tableau 
+ * d'ensembles et renvoie un nouveau tableau d'ensembles résultant.
+ * Enleve les ensembles qui ont formees un nouvel, mais garde ceux qui
+ * n'en n'ont pas.
+ *
+ * @param tmp_result Le tableau d'ensembles à utiliser pour les calculs d'intersection.
+ * @return Un nouveau tableau d'ensembles résultant des calculs d'intersection.
+ */
+Tableau<Ensemble<int>> intersections(Tableau<Ensemble<int>> & tmp_result) {
+	Tableau<Ensemble<int>> result_final;
+	for (int i = 0; i < tmp_result.taille(); ++i) {
+		for (int j = 1; j < tmp_result.taille(); ++j) {
+			if (tmp_result[i].inter(tmp_result[j]).taille() != 0){
+				Ensemble<int> tmp = tmp_result[i].fusion(tmp_result[j]);
+				tmp_result.enlever(j);
+				tmp_result.enlever(i);
+				result_final.ajouter(tmp);
+			}
+		}
+	}
+	return result_final;
+}
+
 /**
  * Cette fonction lit son entrée standard pour construire le réseau.
  * Par la suite, elle calcule le nombre de communautés et leur tailles
@@ -25,24 +98,18 @@ using namespace std;
  * toutes les communautés présentes dans le réseau lu.
  */
 Tableau<int> communautes() {
-	int premier_membre, deuxieme_membre, nombre_membres;
-
 	// Stocker la premiere ligne contenant le nombre de membres
+	int nombre_membres;
 	cin >> nombre_membres;
-	Tableau<int> membres;
+	
 	// Tableau de longueur du nombre de membre au fur et a mesure 1 sera mis pour les membre dans une communaute
-	for (int i = 0; i < nombre_membres; ++i) {
+	Tableau<int> membres;
+	for (int i = 0; i < nombre_membres; ++i)
 		membres.ajouter(0);
-	}
 
 	// Tableau de paire correspondants aux lignes dans le fichier en entree
 	Tableau<Tableau<int>> source;
-	while (cin >> premier_membre >> deuxieme_membre) {
-		Tableau<int> tmp;
-        tmp.ajouter(premier_membre);
-        tmp.ajouter(deuxieme_membre);
-		source.ajouter(tmp);
-    }
+	input_pairs(source);
 
 	// Ce tableau aura des ensembles qui pourraient avoir une intersection
 	Tableau<Ensemble<int>> tmp_result;
@@ -72,41 +139,18 @@ Tableau<int> communautes() {
 		}
 	}
 
-	// Tableau des communautees
-	Tableau<Ensemble<int>> result_final;
-
 	// Verifier les intersections entre ensembles
-	for (int i = 0; i < tmp_result.taille(); ++i) {
-		for (int j = 1; j < tmp_result.taille(); ++j) {
-			if (tmp_result[i].inter(tmp_result[j]).taille() != 0){
-				Ensemble<int> tmp = tmp_result[i].fusion(tmp_result[j]);
-				tmp_result.enlever(j);
-				tmp_result.enlever(i);
-				result_final.ajouter(tmp);
-			}
-		}
-	}
+	Tableau<Ensemble<int>> result_final;
+	result_final = intersections(tmp_result);
 
 	// Rajouter les ensembles qui n'avaient pas d'intersections avec un autre ensemble
-	for (int i = 0; i < tmp_result.taille(); ++i) {
+	for (int i = 0; i < tmp_result.taille(); ++i)
 		result_final.inserer(tmp_result[i]);
-	}
 
 	// Rajouter les membre qui n'etaient dans aucune communaute
-	for (int i = 0; i < nombre_membres; ++i) {
-		if(membres[i] == 0) {
-			Ensemble<int> tmp;
-			tmp.inserer(i);
-			result_final.ajouter(tmp);
-		}
-	}
+	add_loners(nombre_membres, membres, result_final);
 
-	Tableau<int> comptes;
-	for (int i = 0; i < result_final.taille(); ++i) {
-		comptes.ajouter(result_final[i].taille());
-	}
-
-	return comptes;
+	return count_members(result_final);
 }
 
 /**
